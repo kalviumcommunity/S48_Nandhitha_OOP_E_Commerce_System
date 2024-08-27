@@ -83,18 +83,65 @@ public:
 };
 
 int main() {
-    // Creating item objects
-    Item apples("Apples", 50.0, 4);  // 4 Apples at Rs50 each
-    Item bananas("Bananas", 30.0, 6);  // 6 Bananas at Rs30 each
-    Item milk("Milk", 150.0, 2);  // 2 bottles of Milk at Rs150 each
+    // Array of items with name, price and initial quantity
+    Item items[] = {
+        Item("Apples", 50.0, 0),
+        Item("Bananas", 30.0, 0),
+        Item("Milk", 150.0, 0),
+        Item("Bread", 40.0, 0),
+        Item("Cheese", 200.0, 0),
+        Item("Eggs", 10.0, 0),
+        Item("Butter", 80.0, 0),
+        Item("Rice", 60.0, 0),
+        Item("Pasta", 120.0, 0),
+        Item("Sugar", 45.0, 0),
+        Item("Coffee", 250.0, 0),
+        Item("Tea", 150.0, 0),
+        Item("Juice", 75.0, 0),
+        Item("Chicken", 300.0, 0),
+        Item("Beef", 400.0, 0),
+        Item("Fish", 350.0, 0),
+        Item("Potatoes", 25.0, 0),
+        Item("Onions", 35.0, 0),
+        Item("Tomatoes", 50.0, 0),
+        Item("Carrots", 40.0, 0)
+    };
 
-    // Creating a cart object and adding items to it
+    int numItems = sizeof(items) / sizeof(items[0]);
     Cart cart;
-    cart.addItem(apples);
-    cart.addItem(bananas);
-    cart.addItem(milk);
+    int choice;
+    int quantity;
 
-    // Creating a bill object and generating the bill
+    while (true) {
+        std::cout << "Select an item to add to the cart:\n";
+        
+        // Display the menu using a for loop
+        for (int i = 0; i < numItems; ++i) {
+            std::cout << (i + 1) << ". " << items[i].getName() << " (Rs" 
+                      << std::fixed << std::setprecision(2) 
+                      << items[i].getPrice() << " each)\n";
+        }
+        std::cout << (numItems + 1) << ". Checkout and Generate Bill\n";
+        std::cout << "Enter your choice: ";
+        std::cin >> choice;
+
+        if (choice == numItems + 1) {
+            break;
+        }
+
+        if (choice < 1 || choice > numItems) {
+            std::cout << "Invalid choice! Please try again.\n";
+            continue;
+        }
+
+        std::cout << "Enter quantity: ";
+        std::cin >> quantity;
+
+        // Add the selected item with the specified quantity to the cart
+        Item selectedItem = items[choice - 1];
+        cart.addItem(Item(selectedItem.getName(), selectedItem.getPrice(), quantity));
+    }
+
     Bill bill(cart);
     bill.generateBill();
 
