@@ -9,26 +9,21 @@ private:
     int quantity;
 
 public:
-    // Constructor to initialize the item
     Item(std::string itemName, double itemPrice, int itemQuantity)
         : name(itemName), price(itemPrice), quantity(itemQuantity) {}
 
-    // Getter for the name
     std::string getName() const {
         return name;
     }
 
-    // Getter for the price
     double getPrice() const {
         return price;
     }
 
-    // Getter for the quantity
     int getQuantity() const {
         return quantity;
     }
 
-    // Method to calculate the total price for this item
     double getTotalPrice() const {
         return price * quantity;
     }
@@ -36,15 +31,13 @@ public:
 
 class Cart {
 private:
-    std::vector<Item> items;  // Vector to store items in the cart
+    std::vector<Item> items; 
 
 public:
-    // Method to add an item to the cart
     void addItem(const Item& item) {
         items.push_back(item);
     }
 
-    // Method to calculate the total amount of all items in the cart
     double getTotalAmount() const {
         double total = 0.0;
         for (const auto& item : items) {
@@ -53,7 +46,6 @@ public:
         return total;
     }
 
-    // Method to return the items in the cart
     const std::vector<Item>& getItems() const {
         return items;
     }
@@ -61,13 +53,11 @@ public:
 
 class Bill {
 private:
-    Cart cart;  // Cart object to generate the bill from
+    Cart cart;
 
 public:
-    // Constructor to initialize the bill with a cart
     Bill(const Cart& cart) : cart(cart) {}
 
-    // Method to generate and print the bill
     void generateBill() const {
         std::cout << "----- Grocery Bill -----\n";
         for (const auto& item : cart.getItems()) {
