@@ -33,12 +33,13 @@ public:
 
 class Cart {
 private:
-    vector<Item*> items; 
-    static int totalItemsInCart;
+    vector<Item*> items;
+    static int totalItemsInCart;      
+    static int totalItemsSold;        
 
 public:
     Cart() {
-        totalItemsInCart = 0; 
+        totalItemsInCart = 0;
     }
 
     ~Cart() {
@@ -50,14 +51,15 @@ public:
     void addItem(Item* item) {
         this->items.push_back(item);
         totalItemsInCart += item->getQuantity();
+        totalItemsSold += item->getQuantity(); 
     }
 
     void removeItem(const string& itemName) {
         for (auto it = items.begin(); it != items.end(); ) {
             if ((*it)->getName() == itemName) {
-                totalItemsInCart -= (*it)->getQuantity(); 
-                delete *it;  
-                it = items.erase(it);  
+                totalItemsInCart -= (*it)->getQuantity();
+                delete *it;
+                it = items.erase(it);
             } else {
                 ++it;
             }
@@ -68,9 +70,13 @@ public:
         return totalItemsInCart;
     }
 
+    static int getTotalItemsSold() {
+        return totalItemsSold;
+    }
+
     double getTotalAmount() const {
         double total = 0.0;
-        for (const auto& item : this->items) { 
+        for (const auto& item : this->items) {
             total += item->getTotalPrice();
         }
         return total;
@@ -82,6 +88,7 @@ public:
 };
 
 int Cart::totalItemsInCart = 0;
+int Cart::totalItemsSold = 0;  
 
 class Bill {
 private:
@@ -92,7 +99,7 @@ public:
 
     void generateBill() const {
         cout << "----- Grocery Bill -----\n";
-        for (const auto& item : this->cart->getItems()) { 
+        for (const auto& item : this->cart->getItems()) {
             cout << item->getName() << " - " << item->getQuantity()
                  << " x Rs" << fixed << setprecision(2)
                  << item->getPrice() << " = Rs" << item->getTotalPrice() << "\n";
@@ -139,8 +146,8 @@ int main() {
         if (choice == 1) {
             cout << "Select an item to add to the cart:\n";
             for (int i = 0; i < numItems; ++i) {
-                cout << (i + 1) << ". " << items[i]->getName() << " (Rs" 
-                     << fixed << setprecision(2) 
+                cout << (i + 1) << ". " << items[i]->getName() << " (Rs"
+                     << fixed << setprecision(2)
                      << items[i]->getPrice() << " each)\n";
             }
             cout << "Enter item number: ";
@@ -159,7 +166,7 @@ int main() {
         } else if (choice == 2) {
             cout << "Enter the name of the item to remove from the cart: ";
             string itemName;
-            cin.ignore();  
+            cin.ignore();
             getline(cin, itemName);
             cart->removeItem(itemName);
         } else {
@@ -170,6 +177,7 @@ int main() {
     Bill bill(cart);
     bill.generateBill();
 
+    cout << "Total items sold in all carts: " << Cart::getTotalItemsSold() << "\n";
     delete cart;
     for (int i = 0; i < numItems; ++i) {
         delete items[i];
