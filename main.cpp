@@ -31,74 +31,70 @@ public:
 
 class Cart {
 private:
-    std::vector<Item> items;
-    std::vector<Item> items; 
+    std::vector<Item*> items; // Store pointers to dynamically allocated items
 
 public:
-    void addItem(const Item& item) {
+    ~Cart() { // Destructor to free allocated memory
+        for (Item* item : items) {
+            delete item;
+        }
+    }
+
+    void addItem(Item* item) {
         this->items.push_back(item);
     }
 
     double getTotalAmount() const {
         double total = 0.0;
         for (const auto& item : this->items) { 
-            total += item.getTotalPrice();
+            total += item->getTotalPrice();
         }
         return total;
     }
 
-    const std::vector<Item>& getItems() const {
+    const std::vector<Item*>& getItems() const {
         return this->items;
     }
 };
 
 class Bill {
 private:
-    Cart cart;
+    Cart* cart; // Dynamically allocated Cart
 
 public:
-    Bill(const Cart& cart) : cart(cart) {}
+    Bill(Cart* cart) : cart(cart) {}
 
     void generateBill() const {
         std::cout << "----- Grocery Bill -----\n";
-        for (const auto& item : this->cart.getItems()) { 
-            std::cout << item.getName() << " - " << item.getQuantity()
+        for (const auto& item : this->cart->getItems()) { 
+            std::cout << item->getName() << " - " << item->getQuantity()
                       << " x Rs" << std::fixed << std::setprecision(2)
-                      << item.getPrice() << " = Rs" << item.getTotalPrice() << "\n";
+                      << item->getPrice() << " = Rs" << item->getTotalPrice() << "\n";
         }
         std::cout << "------------------------\n";
         std::cout << "Total Amount: Rs" << std::fixed << std::setprecision(2)
-                  << this->cart.getTotalAmount() << "\n";
+                  << this->cart->getTotalAmount() << "\n";
         std::cout << "------------------------\n";
     }
 };
 
 int main() {
-    Item items[] = {
-        Item("Apples", 50.0, 0),
-        Item("Bananas", 30.0, 0),
-        Item("Milk", 150.0, 0),
-        Item("Bread", 40.0, 0),
-        Item("Cheese", 200.0, 0),
-        Item("Eggs", 10.0, 0),
-        Item("Butter", 80.0, 0),
-        Item("Rice", 60.0, 0),
-        Item("Pasta", 120.0, 0),
-        Item("Sugar", 45.0, 0),
-        Item("Coffee", 250.0, 0),
-        Item("Tea", 150.0, 0),
-        Item("Juice", 75.0, 0),
-        Item("Chicken", 300.0, 0),
-        Item("Beef", 400.0, 0),
-        Item("Fish", 350.0, 0),
-        Item("Potatoes", 25.0, 0),
-        Item("Onions", 35.0, 0),
-        Item("Tomatoes", 50.0, 0),
-        Item("Carrots", 40.0, 0)
+    // Dynamically allocate array of items
+    Item* items[] = {
+        new Item("Apples", 50.0, 0),
+        new Item("Bananas", 30.0, 0),
+        new Item("Milk", 150.0, 0),
+        new Item("Bread", 40.0, 0),
+        new Item("Cheese", 200.0, 0),
+        new Item("Eggs", 10.0, 0),
+        new Item("Butter", 80.0, 0),
+        new Item("Rice", 60.0, 0),
+        new Item("Pasta", 120.0, 0),
+        new Item("Carrots", 40.0, 0)
     };
 
     int numItems = sizeof(items) / sizeof(items[0]);
-    Cart cart;
+    Cart* cart = new Cart();
     int choice;
     int quantity;
 
@@ -106,9 +102,9 @@ int main() {
         std::cout << "Select an item to add to the cart:\n";
         
         for (int i = 0; i < numItems; ++i) {
-            std::cout << (i + 1) << ". " << items[i].getName() << " (Rs" 
+            std::cout << (i + 1) << ". " << items[i]->getName() << " (Rs" 
                       << std::fixed << std::setprecision(2) 
-                      << items[i].getPrice() << " each)\n";
+                      << items[i]->getPrice() << " each)\n";
         }
         std::cout << (numItems + 1) << ". Checkout and Generate Bill\n";
         std::cout << "Enter your choice: ";
@@ -126,12 +122,19 @@ int main() {
         std::cout << "Enter quantity: ";
         std::cin >> quantity;
 
-        Item selectedItem = items[choice - 1];
-        cart.addItem(Item(selectedItem.getName(), selectedItem.getPrice(), quantity));
+        cart->addItem(new Item(items[choice - 1]->getName(), items[choice - 1]->getPrice(), quantity));
     }
 
     Bill bill(cart);
     bill.generateBill();
+
+    // Clean up dynamically allocated memory
+    delete cart; // This will call the Cart destructor and delete all items in the cart
+
+    // Delete the dynamically allocated items
+    for (int i = 0; i < numItems; ++i) {
+        delete items[i];
+    }
 
     return 0;
 }
