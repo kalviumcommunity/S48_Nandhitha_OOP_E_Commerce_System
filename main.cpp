@@ -31,10 +31,10 @@ public:
 
 class Cart {
 private:
-    std::vector<Item*> items; // Store pointers to dynamically allocated items
+    std::vector<Item*> items; 
 
 public:
-    ~Cart() { // Destructor to free allocated memory
+    ~Cart() {
         for (Item* item : items) {
             delete item;
         }
@@ -59,7 +59,7 @@ public:
 
 class Bill {
 private:
-    Cart* cart; // Dynamically allocated Cart
+    Cart* cart;
 
 public:
     Bill(Cart* cart) : cart(cart) {}
@@ -79,7 +79,6 @@ public:
 };
 
 int main() {
-    // Dynamically allocate array of items
     Item* items[] = {
         new Item("Apples", 50.0, 0),
         new Item("Bananas", 30.0, 0),
@@ -128,10 +127,7 @@ int main() {
     Bill bill(cart);
     bill.generateBill();
 
-    // Clean up dynamically allocated memory
-    delete cart; // This will call the Cart destructor and delete all items in the cart
-
-    // Delete the dynamically allocated items
+    delete cart;
     for (int i = 0; i < numItems; ++i) {
         delete items[i];
     }
