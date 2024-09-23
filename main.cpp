@@ -34,8 +34,13 @@ public:
 class Cart {
 private:
     vector<Item*> items; 
+    static int totalItemsInCart;
 
 public:
+    Cart() {
+        totalItemsInCart = 0; 
+    }
+
     ~Cart() {
         for (Item* item : items) {
             delete item;
@@ -44,17 +49,23 @@ public:
 
     void addItem(Item* item) {
         this->items.push_back(item);
+        totalItemsInCart += item->getQuantity();
     }
 
     void removeItem(const string& itemName) {
         for (auto it = items.begin(); it != items.end(); ) {
             if ((*it)->getName() == itemName) {
+                totalItemsInCart -= (*it)->getQuantity(); 
                 delete *it;  
                 it = items.erase(it);  
             } else {
                 ++it;
             }
         }
+    }
+
+    static int getTotalItemsInCart() { 
+        return totalItemsInCart;
     }
 
     double getTotalAmount() const {
@@ -69,6 +80,8 @@ public:
         return this->items;
     }
 };
+
+int Cart::totalItemsInCart = 0;
 
 class Bill {
 private:
@@ -87,6 +100,7 @@ public:
         cout << "------------------------\n";
         cout << "Total Amount: Rs" << fixed << setprecision(2)
              << this->cart->getTotalAmount() << "\n";
+        cout << "Total items in cart: " << Cart::getTotalItemsInCart() << "\n";
         cout << "------------------------\n";
     }
 };
