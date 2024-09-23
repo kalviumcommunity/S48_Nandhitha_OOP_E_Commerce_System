@@ -2,17 +2,19 @@
 #include <vector>
 #include <iomanip>
 
+using namespace std;
+
 class Item {
 private:
-    std::string name;
+    string name;
     double price;
     int quantity;
 
 public:
-    Item(std::string itemName, double itemPrice, int itemQuantity)
+    Item(string itemName, double itemPrice, int itemQuantity)
         : name(itemName), price(itemPrice), quantity(itemQuantity) {}
 
-    std::string getName() const {
+    string getName() const {
         return this->name;
     }
 
@@ -31,7 +33,7 @@ public:
 
 class Cart {
 private:
-    std::vector<Item*> items; 
+    vector<Item*> items; 
 
 public:
     ~Cart() {
@@ -44,6 +46,17 @@ public:
         this->items.push_back(item);
     }
 
+    void removeItem(const string& itemName) {
+        for (auto it = items.begin(); it != items.end(); ) {
+            if ((*it)->getName() == itemName) {
+                delete *it;  
+                it = items.erase(it);  
+            } else {
+                ++it;
+            }
+        }
+    }
+
     double getTotalAmount() const {
         double total = 0.0;
         for (const auto& item : this->items) { 
@@ -52,7 +65,7 @@ public:
         return total;
     }
 
-    const std::vector<Item*>& getItems() const {
+    const vector<Item*>& getItems() const {
         return this->items;
     }
 };
@@ -65,16 +78,16 @@ public:
     Bill(Cart* cart) : cart(cart) {}
 
     void generateBill() const {
-        std::cout << "----- Grocery Bill -----\n";
+        cout << "----- Grocery Bill -----\n";
         for (const auto& item : this->cart->getItems()) { 
-            std::cout << item->getName() << " - " << item->getQuantity()
-                      << " x Rs" << std::fixed << std::setprecision(2)
-                      << item->getPrice() << " = Rs" << item->getTotalPrice() << "\n";
+            cout << item->getName() << " - " << item->getQuantity()
+                 << " x Rs" << fixed << setprecision(2)
+                 << item->getPrice() << " = Rs" << item->getTotalPrice() << "\n";
         }
-        std::cout << "------------------------\n";
-        std::cout << "Total Amount: Rs" << std::fixed << std::setprecision(2)
-                  << this->cart->getTotalAmount() << "\n";
-        std::cout << "------------------------\n";
+        cout << "------------------------\n";
+        cout << "Total Amount: Rs" << fixed << setprecision(2)
+             << this->cart->getTotalAmount() << "\n";
+        cout << "------------------------\n";
     }
 };
 
@@ -98,30 +111,46 @@ int main() {
     int quantity;
 
     while (true) {
-        std::cout << "Select an item to add to the cart:\n";
-        
-        for (int i = 0; i < numItems; ++i) {
-            std::cout << (i + 1) << ". " << items[i]->getName() << " (Rs" 
-                      << std::fixed << std::setprecision(2) 
-                      << items[i]->getPrice() << " each)\n";
-        }
-        std::cout << (numItems + 1) << ". Checkout and Generate Bill\n";
-        std::cout << "Enter your choice: ";
-        std::cin >> choice;
+        cout << "Select an action:\n";
+        cout << "1. Add an item to the cart\n";
+        cout << "2. Remove an item from the cart\n";
+        cout << (numItems + 1) << ". Checkout and Generate Bill\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
 
         if (choice == numItems + 1) {
             break;
         }
 
-        if (choice < 1 || choice > numItems) {
-            std::cout << "Invalid choice! Please try again.\n";
-            continue;
+        if (choice == 1) {
+            cout << "Select an item to add to the cart:\n";
+            for (int i = 0; i < numItems; ++i) {
+                cout << (i + 1) << ". " << items[i]->getName() << " (Rs" 
+                     << fixed << setprecision(2) 
+                     << items[i]->getPrice() << " each)\n";
+            }
+            cout << "Enter item number: ";
+            int itemChoice;
+            cin >> itemChoice;
+
+            if (itemChoice < 1 || itemChoice > numItems) {
+                cout << "Invalid choice! Please try again.\n";
+                continue;
+            }
+
+            cout << "Enter quantity: ";
+            cin >> quantity;
+
+            cart->addItem(new Item(items[itemChoice - 1]->getName(), items[itemChoice - 1]->getPrice(), quantity));
+        } else if (choice == 2) {
+            cout << "Enter the name of the item to remove from the cart: ";
+            string itemName;
+            cin.ignore();  
+            getline(cin, itemName);
+            cart->removeItem(itemName);
+        } else {
+            cout << "Invalid choice! Please try again.\n";
         }
-
-        std::cout << "Enter quantity: ";
-        std::cin >> quantity;
-
-        cart->addItem(new Item(items[choice - 1]->getName(), items[choice - 1]->getPrice(), quantity));
     }
 
     Bill bill(cart);
