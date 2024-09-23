@@ -32,6 +32,7 @@ public:
 class Cart {
 private:
     std::vector<Item> items;
+    std::vector<Item> items; 
 
 public:
     void addItem(const Item& item) {
