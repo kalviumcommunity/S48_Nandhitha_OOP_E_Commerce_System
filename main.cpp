@@ -9,81 +9,71 @@ private:
     int quantity;
 
 public:
-    // Constructor to initialize the item
     Item(std::string itemName, double itemPrice, int itemQuantity)
         : name(itemName), price(itemPrice), quantity(itemQuantity) {}
 
-    // Getter for the name
     std::string getName() const {
-        return this->name;  // Using this pointer
+        return this->name;
     }
 
-    // Getter for the price
     double getPrice() const {
-        return this->price;  // Using this pointer
+        return this->price;
     }
 
-    // Getter for the quantity
     int getQuantity() const {
-        return this->quantity;  // Using this pointer
+        return this->quantity;
     }
 
-    // Method to calculate the total price for this item
     double getTotalPrice() const {
-        return this->price * this->quantity;  // Using this pointer
+        return this->price * this->quantity;
     }
 };
 
 class Cart {
 private:
-    std::vector<Item> items;  // Vector to store items in the cart
+    std::vector<Item> items;
+    std::vector<Item> items; 
 
 public:
-    // Method to add an item to the cart
     void addItem(const Item& item) {
-        this->items.push_back(item);  // Using this pointer
+        this->items.push_back(item);
     }
 
-    // Method to calculate the total amount of all items in the cart
     double getTotalAmount() const {
         double total = 0.0;
-        for (const auto& item : this->items) {  // Using this pointer
+        for (const auto& item : this->items) { 
             total += item.getTotalPrice();
         }
         return total;
     }
 
-    // Method to return the items in the cart
     const std::vector<Item>& getItems() const {
-        return this->items;  // Using this pointer
+        return this->items;
     }
 };
 
 class Bill {
 private:
-    Cart cart;  // Cart object to generate the bill from
+    Cart cart;
 
 public:
-    // Constructor to initialize the bill with a cart
     Bill(const Cart& cart) : cart(cart) {}
 
-    // Method to generate and print the bill
     void generateBill() const {
         std::cout << "----- Grocery Bill -----\n";
-        for (const auto& item : this->cart.getItems()) {  // Using this pointer
+        for (const auto& item : this->cart.getItems()) { 
             std::cout << item.getName() << " - " << item.getQuantity()
                       << " x Rs" << std::fixed << std::setprecision(2)
                       << item.getPrice() << " = Rs" << item.getTotalPrice() << "\n";
         }
         std::cout << "------------------------\n";
         std::cout << "Total Amount: Rs" << std::fixed << std::setprecision(2)
-                  << this->cart.getTotalAmount() << "\n";  // Using this pointer
+                  << this->cart.getTotalAmount() << "\n";
         std::cout << "------------------------\n";
     }
 };
 
 int main() {
-    // Array of items with name, price and initial quantity
     Item items[] = {
         Item("Apples", 50.0, 0),
         Item("Bananas", 30.0, 0),
@@ -115,7 +105,6 @@ int main() {
     while (true) {
         std::cout << "Select an item to add to the cart:\n";
         
-        // Display the menu using a for loop
         for (int i = 0; i < numItems; ++i) {
             std::cout << (i + 1) << ". " << items[i].getName() << " (Rs" 
                       << std::fixed << std::setprecision(2) 
@@ -137,7 +126,6 @@ int main() {
         std::cout << "Enter quantity: ";
         std::cin >> quantity;
 
-        // Add the selected item with the specified quantity to the cart
         Item selectedItem = items[choice - 1];
         cart.addItem(Item(selectedItem.getName(), selectedItem.getPrice(), quantity));
     }
