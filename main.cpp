@@ -79,11 +79,17 @@ public:
 };
 
 int main() {
+    // Dynamically allocate array of items
     Item* items[] = {
         new Item("Apples", 50.0, 0),
         new Item("Bananas", 30.0, 0),
         new Item("Milk", 150.0, 0),
-        // ... (other items)
+        new Item("Bread", 40.0, 0),
+        new Item("Cheese", 200.0, 0),
+        new Item("Eggs", 10.0, 0),
+        new Item("Butter", 80.0, 0),
+        new Item("Rice", 60.0, 0),
+        new Item("Pasta", 120.0, 0),
         new Item("Carrots", 40.0, 0)
     };
 
@@ -123,7 +129,9 @@ int main() {
     bill.generateBill();
 
     // Clean up dynamically allocated memory
-    delete cart;
+    delete cart; // This will call the Cart destructor and delete all items in the cart
+
+    // Delete the dynamically allocated items
     for (int i = 0; i < numItems; ++i) {
         delete items[i];
     }
