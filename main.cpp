@@ -11,7 +11,6 @@ private:
     int quantity;
 
 public:
-    // Default constructor
     Item() {
         name = "Unknown";
         price = 0.0;
@@ -19,12 +18,10 @@ public:
         cout << "" << endl;
     }
 
-    // Parameterized constructor
     Item(string itemName, double itemPrice, int itemQuantity)
         : name(itemName), price(itemPrice), quantity(itemQuantity) {
     }
 
-    // Destructor to indicate when an Item object is destroyed
     ~Item() {
         cout << "" << endl;
     }
@@ -146,10 +143,8 @@ public:
 };
 
 int main() {
-    // Using default constructor for one item
     Item* defaultItem = new Item();
 
-    // Using parameterized constructor for others
     Item* items[] = {
         new Item("Apples", 50.0, 0),
         new Item("Bananas", 30.0, 0),
@@ -218,7 +213,7 @@ int main() {
     cout << "Total items sold in all carts: " << Cart::getTotalItemsSold() << "\n";
 
     delete cart;
-    delete defaultItem; // Delete the item created with default constructor
+    delete defaultItem;
     for (int i = 0; i < numItems; ++i) {
         delete items[i];
     }
