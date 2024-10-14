@@ -11,8 +11,20 @@ private:
     int quantity;
 
 public:
+    Item() {
+        name = "Unknown";
+        price = 0.0;
+        quantity = 0;
+        cout << "" << endl;
+    }
+
     Item(string itemName, double itemPrice, int itemQuantity)
-        : name(itemName), price(itemPrice), quantity(itemQuantity) {}
+        : name(itemName), price(itemPrice), quantity(itemQuantity) {
+    }
+
+    ~Item() {
+        cout << "" << endl;
+    }
 
     string getName() const {
         return this->name;
@@ -131,6 +143,8 @@ public:
 };
 
 int main() {
+    Item* defaultItem = new Item();
+
     Item* items[] = {
         new Item("Apples", 50.0, 0),
         new Item("Bananas", 30.0, 0),
@@ -197,7 +211,9 @@ int main() {
     bill.generateBill();
 
     cout << "Total items sold in all carts: " << Cart::getTotalItemsSold() << "\n";
+
     delete cart;
+    delete defaultItem;
     for (int i = 0; i < numItems; ++i) {
         delete items[i];
     }
