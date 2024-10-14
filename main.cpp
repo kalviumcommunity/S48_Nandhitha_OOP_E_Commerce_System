@@ -30,19 +30,18 @@ public:
         return this->price * this->quantity;
     }
 
-    
     void setName(const string& newName) {
         this->name = newName;
     }
 
     void setPrice(double newPrice) {
-        if (newPrice >= 0) {  
+        if (newPrice >= 0) {
             this->price = newPrice;
         }
     }
 
     void setQuantity(int newQuantity) {
-        if (newQuantity >= 0) {  
+        if (newQuantity >= 0) {
             this->quantity = newQuantity;
         }
     }
@@ -51,8 +50,10 @@ public:
 class Cart {
 private:
     vector<Item*> items;
-    static int totalItemsInCart;      
-    static int totalItemsSold;        
+
+protected:
+    static int totalItemsInCart;
+    static int totalItemsSold;
 
 public:
     Cart() {
@@ -65,11 +66,10 @@ public:
         }
     }
 
-    
     void addItem(Item* item) {
         this->items.push_back(item);
         totalItemsInCart += item->getQuantity();
-        totalItemsSold += item->getQuantity(); 
+        totalItemsSold += item->getQuantity();
     }
 
     const vector<Item*>& getItems() const {
@@ -88,8 +88,7 @@ public:
         }
     }
 
-    
-    static int getTotalItemsInCart() { 
+    static int getTotalItemsInCart() {
         return totalItemsInCart;
     }
 
@@ -107,7 +106,7 @@ public:
 };
 
 int Cart::totalItemsInCart = 0;
-int Cart::totalItemsSold = 0;  
+int Cart::totalItemsSold = 0;
 
 class Bill {
 private:
