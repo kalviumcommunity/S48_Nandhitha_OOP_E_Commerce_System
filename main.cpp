@@ -29,6 +29,23 @@ public:
     double getTotalPrice() const {
         return this->price * this->quantity;
     }
+
+    
+    void setName(const string& newName) {
+        this->name = newName;
+    }
+
+    void setPrice(double newPrice) {
+        if (newPrice >= 0) {  
+            this->price = newPrice;
+        }
+    }
+
+    void setQuantity(int newQuantity) {
+        if (newQuantity >= 0) {  
+            this->quantity = newQuantity;
+        }
+    }
 };
 
 class Cart {
@@ -48,10 +65,15 @@ public:
         }
     }
 
+    
     void addItem(Item* item) {
         this->items.push_back(item);
         totalItemsInCart += item->getQuantity();
         totalItemsSold += item->getQuantity(); 
+    }
+
+    const vector<Item*>& getItems() const {
+        return this->items;
     }
 
     void removeItem(const string& itemName) {
@@ -66,6 +88,7 @@ public:
         }
     }
 
+    
     static int getTotalItemsInCart() { 
         return totalItemsInCart;
     }
@@ -80,10 +103,6 @@ public:
             total += item->getTotalPrice();
         }
         return total;
-    }
-
-    const vector<Item*>& getItems() const {
-        return this->items;
     }
 };
 
@@ -162,6 +181,7 @@ int main() {
             cout << "Enter quantity: ";
             cin >> quantity;
 
+            items[itemChoice - 1]->setQuantity(quantity);  
             cart->addItem(new Item(items[itemChoice - 1]->getName(), items[itemChoice - 1]->getPrice(), quantity));
         } else if (choice == 2) {
             cout << "Enter the name of the item to remove from the cart: ";
