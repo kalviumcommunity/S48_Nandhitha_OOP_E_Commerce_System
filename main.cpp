@@ -10,12 +10,20 @@ protected:
     double price;
 
 public:
-    Product() : name("Unknown"), price(0.0) {}
+    Item() {
+        name = "Unknown";
+        price = 0.0;
+        quantity = 0;
+        cout << "" << endl;
+    }
 
-    Product(string productName, double productPrice)
-        : name(productName), price(productPrice) {}
+    Item(string itemName, double itemPrice, int itemQuantity)
+        : name(itemName), price(itemPrice), quantity(itemQuantity) {
+    }
 
-    virtual ~Product() {}
+    ~Item() {
+        cout << "" << endl;
+    }
 
     string getName() const {
         return this->name;
@@ -23,6 +31,14 @@ public:
 
     double getPrice() const {
         return this->price;
+    }
+
+    int getQuantity() const {
+        return this->quantity;
+    }
+
+    double getTotalPrice() const {
+        return this->price * this->quantity;
     }
 
     void setName(const string& newName) {
