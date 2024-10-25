@@ -4,11 +4,10 @@
 
 using namespace std;
 
-class Item {
-private:
+class Product {
+protected:
     string name;
     double price;
-    int quantity;
 
 public:
     Item() {
@@ -51,12 +50,38 @@ public:
             this->price = newPrice;
         }
     }
+};
+
+class Item : public Product {
+private:
+    int quantity;
+
+public:
+    Item() : Product(), quantity(0) {}
+
+    Item(string itemName, double itemPrice, int itemQuantity)
+        : Product(itemName, itemPrice), quantity(itemQuantity) {}
+
+    ~Item() {}
+
+    int getQuantity() const {
+        return this->quantity;
+    }
+
+    double getTotalPrice() const {
+        return this->price * this->quantity;
+    }
 
     void setQuantity(int newQuantity) {
         if (newQuantity >= 0) {
             this->quantity = newQuantity;
         }
     }
+};
+
+class Discount {
+public:
+    virtual double applyDiscount(double totalAmount) const = 0;
 };
 
 class Cart {
@@ -120,12 +145,16 @@ public:
 int Cart::totalItemsInCart = 0;
 int Cart::totalItemsSold = 0;
 
-class Bill {
+class Bill : public Discount {
 private:
     Cart* cart;
 
 public:
     Bill(Cart* cart) : cart(cart) {}
+
+    double applyDiscount(double totalAmount) const override {
+        return totalAmount * 0.9;
+    }
 
     void generateBill() const {
         cout << "----- Grocery Bill -----\n";
@@ -135,8 +164,9 @@ public:
                  << item->getPrice() << " = Rs" << item->getTotalPrice() << "\n";
         }
         cout << "------------------------\n";
-        cout << "Total Amount: Rs" << fixed << setprecision(2)
-             << this->cart->getTotalAmount() << "\n";
+        double totalAmount = this->cart->getTotalAmount();
+        cout << "Total Amount: Rs" << fixed << setprecision(2) << totalAmount << "\n";
+        cout << "Discounted Total: Rs" << fixed << setprecision(2) << applyDiscount(totalAmount) << "\n";
         cout << "Total items in cart: " << Cart::getTotalItemsInCart() << "\n";
         cout << "------------------------\n";
     }
