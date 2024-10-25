@@ -4,15 +4,18 @@
 
 using namespace std;
 
-class Item {
-private:
+class Product {
+protected:
     string name;
     double price;
-    int quantity;
 
 public:
-    Item(string itemName, double itemPrice, int itemQuantity)
-        : name(itemName), price(itemPrice), quantity(itemQuantity) {}
+    Product() : name("Unknown"), price(0.0) {}
+
+    Product(string productName, double productPrice)
+        : name(productName), price(productPrice) {}
+
+    virtual ~Product() {}
 
     string getName() const {
         return this->name;
@@ -22,6 +25,29 @@ public:
         return this->price;
     }
 
+    void setName(const string& newName) {
+        this->name = newName;
+    }
+
+    void setPrice(double newPrice) {
+        if (newPrice >= 0) {
+            this->price = newPrice;
+        }
+    }
+};
+
+class Item : public Product {
+private:
+    int quantity;
+
+public:
+    Item() : Product(), quantity(0) {}
+
+    Item(string itemName, double itemPrice, int itemQuantity)
+        : Product(itemName, itemPrice), quantity(itemQuantity) {}
+
+    ~Item() {}
+
     int getQuantity() const {
         return this->quantity;
     }
@@ -30,29 +56,25 @@ public:
         return this->price * this->quantity;
     }
 
-    
-    void setName(const string& newName) {
-        this->name = newName;
-    }
-
-    void setPrice(double newPrice) {
-        if (newPrice >= 0) {  
-            this->price = newPrice;
-        }
-    }
-
     void setQuantity(int newQuantity) {
-        if (newQuantity >= 0) {  
+        if (newQuantity >= 0) {
             this->quantity = newQuantity;
         }
     }
 };
 
+class Discount {
+public:
+    virtual double applyDiscount(double totalAmount) const = 0;
+};
+
 class Cart {
 private:
     vector<Item*> items;
-    static int totalItemsInCart;      
-    static int totalItemsSold;        
+
+protected:
+    static int totalItemsInCart;
+    static int totalItemsSold;
 
 public:
     Cart() {
@@ -65,11 +87,10 @@ public:
         }
     }
 
-    
     void addItem(Item* item) {
         this->items.push_back(item);
         totalItemsInCart += item->getQuantity();
-        totalItemsSold += item->getQuantity(); 
+        totalItemsSold += item->getQuantity();
     }
 
     const vector<Item*>& getItems() const {
@@ -88,8 +109,7 @@ public:
         }
     }
 
-    
-    static int getTotalItemsInCart() { 
+    static int getTotalItemsInCart() {
         return totalItemsInCart;
     }
 
@@ -107,14 +127,18 @@ public:
 };
 
 int Cart::totalItemsInCart = 0;
-int Cart::totalItemsSold = 0;  
+int Cart::totalItemsSold = 0;
 
-class Bill {
+class Bill : public Discount {
 private:
     Cart* cart;
 
 public:
     Bill(Cart* cart) : cart(cart) {}
+
+    double applyDiscount(double totalAmount) const override {
+        return totalAmount * 0.9;
+    }
 
     void generateBill() const {
         cout << "----- Grocery Bill -----\n";
@@ -124,14 +148,17 @@ public:
                  << item->getPrice() << " = Rs" << item->getTotalPrice() << "\n";
         }
         cout << "------------------------\n";
-        cout << "Total Amount: Rs" << fixed << setprecision(2)
-             << this->cart->getTotalAmount() << "\n";
+        double totalAmount = this->cart->getTotalAmount();
+        cout << "Total Amount: Rs" << fixed << setprecision(2) << totalAmount << "\n";
+        cout << "Discounted Total: Rs" << fixed << setprecision(2) << applyDiscount(totalAmount) << "\n";
         cout << "Total items in cart: " << Cart::getTotalItemsInCart() << "\n";
         cout << "------------------------\n";
     }
 };
 
 int main() {
+    Item* defaultItem = new Item();
+
     Item* items[] = {
         new Item("Apples", 50.0, 0),
         new Item("Bananas", 30.0, 0),
@@ -198,7 +225,9 @@ int main() {
     bill.generateBill();
 
     cout << "Total items sold in all carts: " << Cart::getTotalItemsSold() << "\n";
+
     delete cart;
+    delete defaultItem;
     for (int i = 0; i < numItems; ++i) {
         delete items[i];
     }
