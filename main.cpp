@@ -65,7 +65,21 @@ public:
 
 class Discount {
 public:
-    virtual double applyDiscount(double totalAmount) const = 0;
+    virtual double applyDiscount(double totalAmount) const = 0;  
+};
+
+class RegularDiscount : public Discount {
+public:
+    double applyDiscount(double totalAmount) const override {
+        return totalAmount * 0.9;  
+    }
+};
+
+class SeasonalDiscount : public Discount {
+public:
+    double applyDiscount(double totalAmount) const override {
+        return totalAmount * 0.85;  
+    }
 };
 
 class Cart {
@@ -129,16 +143,13 @@ public:
 int Cart::totalItemsInCart = 0;
 int Cart::totalItemsSold = 0;
 
-class Bill : public Discount {
+class Bill {
 private:
     Cart* cart;
+    Discount* discount;  
 
 public:
-    Bill(Cart* cart) : cart(cart) {}
-
-    double applyDiscount(double totalAmount) const override {
-        return totalAmount * 0.9;
-    }
+    Bill(Cart* cart, Discount* discount) : cart(cart), discount(discount) {}
 
     void generateBill() const {
         cout << "----- Grocery Bill -----\n";
@@ -150,7 +161,7 @@ public:
         cout << "------------------------\n";
         double totalAmount = this->cart->getTotalAmount();
         cout << "Total Amount: Rs" << fixed << setprecision(2) << totalAmount << "\n";
-        cout << "Discounted Total: Rs" << fixed << setprecision(2) << applyDiscount(totalAmount) << "\n";
+        cout << "Discounted Total: Rs" << fixed << setprecision(2) << discount->applyDiscount(totalAmount) << "\n";
         cout << "Total items in cart: " << Cart::getTotalItemsInCart() << "\n";
         cout << "------------------------\n";
     }
@@ -221,12 +232,14 @@ int main() {
         }
     }
 
-    Bill bill(cart);
+    Discount* discount = new RegularDiscount();
+    Bill bill(cart, discount);
     bill.generateBill();
 
     cout << "Total items sold in all carts: " << Cart::getTotalItemsSold() << "\n";
 
     delete cart;
+    delete discount;
     delete defaultItem;
     for (int i = 0; i < numItems; ++i) {
         delete items[i];
