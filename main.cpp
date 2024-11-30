@@ -65,20 +65,27 @@ public:
 
 class Discount {
 public:
-    virtual double applyDiscount(double totalAmount) const = 0;  
+    virtual double applyDiscount(double totalAmount) const = 0;
 };
 
 class RegularDiscount : public Discount {
 public:
     double applyDiscount(double totalAmount) const override {
-        return totalAmount * 0.9;  
+        return totalAmount * 0.9;
     }
 };
 
 class SeasonalDiscount : public Discount {
 public:
     double applyDiscount(double totalAmount) const override {
-        return totalAmount * 0.85;  
+        return totalAmount * 0.85;
+    }
+};
+
+class FestivalDiscount : public Discount {
+public:
+    double applyDiscount(double totalAmount) const override {
+        return totalAmount * 0.75;
     }
 };
 
@@ -146,7 +153,7 @@ int Cart::totalItemsSold = 0;
 class Bill {
 private:
     Cart* cart;
-    Discount* discount;  
+    Discount* discount;
 
 public:
     Bill(Cart* cart, Discount* discount) : cart(cart), discount(discount) {}
@@ -232,7 +239,7 @@ int main() {
         }
     }
 
-    Discount* discount = new RegularDiscount();
+    Discount* discount = new FestivalDiscount();
     Bill bill(cart, discount);
     bill.generateBill();
 
